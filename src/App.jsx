@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Play, ArrowRight, Instagram, Youtube, Music as MusicIcon, Menu, X, MapPin } from 'lucide-react';
 
-// --- ASSETS & DATA (PLACEHOLDERS DE ALTA CALIDAD PARA DEMO) ---
+// --- DATA ---
 const ASSETS = {
-  heroVideo: "https://videos.pexels.com/video-files/2034988/2034988-hd_1920_1080_30fps.mp4", // Video de DJ/Club
+  // Video de fondo principal (Hero)
+  heroVideo: "https://videos.pexels.com/video-files/2034988/2034988-hd_1920_1080_30fps.mp4", 
+  
   images: [
     { src: "https://images.unsplash.com/photo-1571266028243-371695039989?q=80&w=1000&auto=format&fit=crop", alt: "Travel Life", tag: "ON TOUR" },
     { src: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=1000&auto=format&fit=crop", alt: "Vocals", tag: "LIVE PERF" },
@@ -58,7 +60,6 @@ const CustomCursor = () => {
   useEffect(() => {
     const moveCursor = (e) => {
       if(cursorRef.current) {
-        // Simple follow logic without heavy GSAP
         cursorRef.current.style.left = `${e.clientX}px`;
         cursorRef.current.style.top = `${e.clientY}px`;
       }
@@ -99,10 +100,10 @@ const Preloader = ({ onComplete }) => {
   return (
     <div className={`fixed inset-0 z-[100] bg-black text-white flex items-center justify-center transition-transform duration-[800ms] cubic-bezier(0.76, 0, 0.24, 1) ${finished ? '-translate-y-full' : 'translate-y-0'}`}>
       <div className="relative">
-        <span className="text-[20vw] font-black leading-none font-sans tracking-tighter tabular-nums">
+        <span className="text-[15vw] md:text-[20vw] font-black leading-none font-sans tracking-tighter tabular-nums">
           {count}
         </span>
-        <span className="absolute top-0 -right-12 text-xl font-bold">%</span>
+        <span className="absolute top-0 -right-8 md:-right-12 text-xl font-bold">%</span>
       </div>
     </div>
   );
@@ -116,7 +117,6 @@ const Navigation = () => {
       <nav className="fixed top-0 left-0 w-full p-6 md:p-10 flex justify-between items-center z-40 mix-blend-difference text-white">
         <a href="#" className="text-xl md:text-2xl font-black tracking-tighter uppercase relative z-50">Oscar Herrera</a>
         
-        {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-10 text-sm font-bold tracking-widest uppercase">
           {['About', 'Gallery', 'Music', 'Contact'].map((item) => (
             <a key={item} href={`#${item.toLowerCase()}`} className="hover:text-gray-400 transition-colors relative group">
@@ -126,13 +126,11 @@ const Navigation = () => {
           ))}
         </div>
 
-        {/* Mobile Menu Button */}
         <button className="md:hidden z-50 text-white" onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? <X size={32} /> : <Menu size={32} />}
         </button>
       </nav>
 
-      {/* Mobile Menu Overlay */}
       <div className={`fixed inset-0 bg-black z-[45] flex flex-col justify-center items-center gap-8 transition-transform duration-500 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         {['About', 'Gallery', 'Music', 'Contact'].map((item) => (
           <a key={item} href={`#${item.toLowerCase()}`} onClick={() => setIsOpen(false)} className="text-5xl font-black uppercase text-white hover:text-gray-500 transition-all">
@@ -150,7 +148,6 @@ const Hero = () => {
 
   return (
     <section className="relative h-screen w-full bg-black overflow-hidden flex items-center justify-center">
-      {/* Hero Video Background */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-black/50 z-10"></div>
         <video 
@@ -162,7 +159,7 @@ const Hero = () => {
       </div>
 
       <div className="relative z-20 flex flex-col items-center w-full px-4 mix-blend-screen">
-        <h1 className={`text-[15vw] md:text-[13vw] leading-[0.85] font-black text-white text-center uppercase tracking-tighter transition-all duration-1000 ease-out ${loaded ? 'translate-y-0 opacity-100 blur-0' : 'translate-y-32 opacity-0 blur-lg'}`}>
+        <h1 className={`text-[18vw] md:text-[13vw] leading-[0.85] font-black text-white text-center uppercase tracking-tighter transition-all duration-1000 ease-out ${loaded ? 'translate-y-0 opacity-100 blur-0' : 'translate-y-32 opacity-0 blur-lg'}`}>
           Oscar<br />Herrera
         </h1>
         
@@ -198,7 +195,6 @@ const About = () => {
   return (
     <section id="about" className="min-h-screen bg-[#050505] text-white flex items-center py-20 px-6">
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
-        {/* Image Side */}
         <div ref={ref} className={`relative aspect-[3/4] md:aspect-[4/5] overflow-hidden ${visible ? 'reveal-image' : 'opacity-0'}`}>
           <img 
             src={ASSETS.images[2].src} 
@@ -210,7 +206,6 @@ const About = () => {
           </div>
         </div>
 
-        {/* Text Side */}
         <div className={`flex flex-col gap-8 ${visible ? 'animate-slide-up' : 'opacity-0 translate-y-20'}`}>
           <h2 className="text-5xl md:text-8xl font-black uppercase leading-[0.9] tracking-tighter">
             Beyond<br /><span className="text-outline text-transparent" style={{ WebkitTextStroke: '2px white' }}>The Beat.</span>
@@ -298,7 +293,6 @@ const Music = () => (
                 <p className="text-sm text-gray-400 uppercase tracking-widest translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 delay-75">{vid.loc}</p>
               </div>
             </div>
-            {/* Play Button Overlay */}
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
               <div className="w-16 h-16 rounded-full border border-white flex items-center justify-center backdrop-blur-sm">
                 <Play fill="white" size={24} />
@@ -356,31 +350,89 @@ const App = () => {
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=Syne:wght@400;700;800&display=swap');
-        
+
         :root {
           --font-display: 'Syne', sans-serif;
           --font-body: 'Inter', sans-serif;
+          color-scheme: dark;
         }
-        
-        html { scroll-behavior: smooth; }
-        body { font-family: var(--font-body); background: #000; cursor: none; margin: 0; padding: 0; }
-        h1, h2, h3, nav { font-family: var(--font-display); }
-        
-        /* Animations */
-        @keyframes marquee { 
-          0% { transform: translateX(0); } 
-          100% { transform: translateX(-50%); } 
+
+        * {
+          box-sizing: border-box;
         }
-        .animate-marquee { animation: marquee 20s linear infinite; }
-        .animate-marquee.reverse { animation-direction: reverse; }
-        
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        .reveal-image { clip-path: inset(0 0 0 0); transition: clip-path 1.2s cubic-bezier(0.76, 0, 0.24, 1); }
-        
-        .animate-slide-up { animation: slideUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes slideUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        html {
+          scroll-behavior: smooth;
+        }
+
+        body {
+          font-family: var(--font-body);
+          background-color: #000000;
+          color: #ffffff;
+          cursor: none;
+          margin: 0;
+          padding: 0;
+          overflow-x: hidden;
+          width: 100%;
+          min-height: 100vh;
+          display: block !important;
+          place-items: unset !important;
+          min-width: unset !important;
+        }
+
+        #root {
+          width: 100%;
+          margin: 0;
+          padding: 0;
+          max-width: none !important;
+          text-align: left;
+        }
+
+        h1, h2, h3, nav {
+          font-family: var(--font-display);
+        }
+
+        .text-outline {
+          -webkit-text-stroke: 1px rgba(255,255,255,0.5);
+          color: transparent;
+        }
+        .text-outline:hover {
+          -webkit-text-stroke: 1px #fff;
+          color: transparent;
+        }
+
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+          animation: marquee 20s linear infinite;
+        }
+        .animate-marquee.reverse {
+          animation-direction: reverse;
+        }
+
+        .reveal-image {
+          clip-path: inset(0 0 0 0);
+          transition: clip-path 1.2s cubic-bezier(0.76, 0, 0.24, 1);
+        }
+
+        .animate-slide-up {
+          animation: slideUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes slideUp {
+          from { transform: translateY(100px); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+        }
       `}</style>
 
       <NoiseOverlay />
