@@ -1,13 +1,432 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>oscar-web</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSCAR HERRERA | DJ & Producer</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Inter:wght@300;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #ffffff;
+            --secondary: #888888;
+            --accent: #00ff88; /* Verde neón sutil inspirado en los láseres */
+            --bg: #050505;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--primary);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            cursor: none; /* Custom cursor handling */
+        }
+
+        /* Tipografía Impactante */
+        h1, h2, h3 {
+            font-family: 'Syne', sans-serif;
+            text-transform: uppercase;
+            line-height: 0.9;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 1px solid var(--primary);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            transition: transform 0.2s;
+        }
+
+        /* Three.js Canvas de Fondo */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+            opacity: 0.5;
+            filter: grayscale(100%) contrast(120%);
+        }
+
+        .hero-content {
+            z-index: 2;
+            text-align: center;
+            
+            text-shadow: 0 0 20px rgba(0,0,0,0.8); 
+        }
+
+        .hero-title {
+            font-size: 12vw;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            opacity: 0; /* Animado con GSAP */
+            transform: translateY(100px);
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            letter-spacing: 0.5em;
+            margin-top: 20px;
+            opacity: 0;
+        }
+
+        /* --- SCROLLYTELLING SECTION --- */
+        .narrative {
+            padding: 10vh 5vw;
+            position: relative;
+            z-index: 1;
+        }
+
+        .story-block {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin-bottom: 20vh;
+            opacity: 0.2; /* Animado */
+            transition: opacity 0.5s;
+        }
+
+        .story-block.active {
+            opacity: 1;
+        }
+
+        .story-text h2 {
+            font-size: 5vw;
+            margin-bottom: 20px;
+        }
+
+        .story-text p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            color: var(--secondary);
+        }
+
+        .media-container {
+            width: 100%;
+            height: 60vh;
+            overflow: hidden;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .media-container img, .media-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scale(1.2); /* Para efecto parallax */
+        }
+
+        /* --- GALLERY GRID --- */
+        .gallery-section {
+            padding: 10vh 2vw;
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .g-item {
+            height: 50vh;
+            background: #222;
+            overflow: hidden;
+        }
+
+        .g-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.7s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .g-item:hover img {
+            transform: scale(1.1);
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+            text-align: center;
+        }
+
+        .booking-btn {
+            font-family: 'Syne', sans-serif;
+            font-size: 8vw;
+            color: transparent;
+            -webkit-text-stroke: 2px #fff;
+            text-decoration: none;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .booking-btn:hover {
+            color: var(--accent);
+            -webkit-text-stroke: 2px var(--accent);
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .hero-title { font-size: 18vw; }
+            .gallery-grid { grid-template-columns: 1fr; }
+            .story-text h2 { font-size: 10vw; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cursor"></div>
+
+    <div id="canvas-container"></div>
+
+    <main id="main-content">
+        
+        <section class="hero">
+            <video class="hero-video" autoplay muted loop playsinline>
+                <source src="assets/video_hero.mp4" type="video/mp4">
+            </video>
+            <div class="hero-content">
+                <h1 class="hero-title">OSCAR<br>HERRERA</h1>
+                <p class="hero-subtitle">WORLDWIDE DJ & PRODUCER</p>
+            </div>
+        </section>
+
+        <section class="narrative">
+            
+            <div class="story-block" id="block1">
+                <div class="media-container">
+                    <img src="assets/foto_profile.jpg" alt="Oscar Herrera Airport" class="parallax-img">
+                </div>
+                <div class="story-text">
+                    <h2>THE JOURNEY</h2>
+                    <p>La música es un camino de fe y persistencia. No importa los obstáculos, solo la conexión con el público y la energía del momento.</p>
+                </div>
+            </div>
+
+            <div class="story-block" id="block2">
+                <div class="story-text" style="text-align: right; width: 100%; display: flex; flex-direction: column; align-items: flex-end;">
+                    <h2>GLOBAL STAGE</h2>
+                    <p>Desde Madrid hasta Ciudad de México, Londres y Vancouver. Llevando el sonido a los mejores festivales y clubs del mundo.</p>
+                </div>
+                <div class="media-container">
+                    <video autoplay muted loop playsinline class="parallax-img">
+                        <source src="assets/video_mexico.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+
+            <div class="story-block" id="block3">
+                <div class="media-container">
+                    <img src="assets/foto_paris.jpg" alt="Oscar Herrera Paris" class="parallax-img">
+                </div>
+                <div class="story-text">
+                    <h2>UNFORGETTABLE</h2>
+                    <p>Creando experiencias visuales y sonoras que perduran. Calidad, energía y pasión en cada set.</p>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="gallery-section">
+            <h2 style="font-size: 4vw; margin-bottom: 50px; text-align: center;">LATEST SHOTS</h2>
+            <div class="gallery-grid">
+                <div class="g-item"><img src="assets/foto_crowd.jpg" alt="Crowd"></div>
+                <div class="g-item"><img src="assets/foto_dj.jpg" alt="DJ Booth"></div>
+            </div>
+        </section>
+
+        <footer>
+            <p style="margin-bottom: 20px; font-size: 1.2rem; color: var(--secondary);">READY FOR THE NEXT SHOW?</p>
+            <a href="mailto:booking@oscarherrera.com" class="booking-btn">BOOK NOW</a>
+            <div style="margin-top: 50px; display: flex; gap: 20px;">
+                <a href="#" style="color: white; text-decoration: none;">INSTAGRAM</a>
+                <a href="#" style="color: white; text-decoration: none;">SPOTIFY</a>
+                <a href="#" style="color: white; text-decoration: none;">YOUTUBE</a>
+            </div>
+        </footer>
+
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+
+    <script>
+        // 1. Inicializar Scroll Suave (Lenis)
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            direction: 'vertical',
+            smooth: true
+        });
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
+        // 2. Animaciones GSAP
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Hero Texto
+        gsap.to(".hero-title", {
+            opacity: 1,
+            y: 0,
+            duration: 1.5,
+            ease: "power4.out",
+            delay: 0.5
+        });
+        gsap.to(".hero-subtitle", {
+            opacity: 1,
+            duration: 1.5,
+            delay: 1
+        });
+
+        // Parallax de Imágenes
+        const images = document.querySelectorAll(".parallax-img");
+        images.forEach(img => {
+            gsap.to(img, {
+                yPercent: 20,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: img.parentElement,
+                    start: "top bottom",
+                    end: "bottom top",
+                    scrub: true
+                }
+            });
+        });
+
+        // Fade In de Bloques de Historia
+        const blocks = document.querySelectorAll(".story-block");
+        blocks.forEach(block => {
+            gsap.to(block, {
+                opacity: 1,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: block,
+                    start: "top 75%",
+                    end: "top 20%",
+                    toggleActions: "play none none reverse"
+                }
+            });
+        });
+
+        // Cursor
+        const cursor = document.querySelector('.cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        // 3. Three.js Background (Partículas Estrellas/Polvo)
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true }); // Alpha true para transparencia
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        // Crear Partículas
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 2000;
+        const posArray = new Float32Array(particlesCount * 3);
+
+        for(let i = 0; i < particlesCount * 3; i++) {
+            // Posicionar partículas aleatoriamente en un espacio 3D
+            posArray[i] = (Math.random() - 0.5) * 15;
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+        // Material
+        const material = new THREE.PointsMaterial({
+            size: 0.02,
+            color: 0xffffff,
+        });
+
+        const particlesMesh = new THREE.Points(particlesGeometry, material);
+        scene.add(particlesMesh);
+
+        camera.position.z = 3;
+
+        // Animación Mouse + Scroll
+        let mouseY = 0;
+        let mouseX = 0;
+
+        document.addEventListener('mousemove', (event) => {
+            mouseY = event.clientY;
+            mouseX = event.clientX;
+        });
+
+        const clock = new THREE.Clock();
+
+        const animate3D = () => {
+            const elapsedTime = clock.getElapsedTime();
+
+            // Rotación suave constante
+            particlesMesh.rotation.y = elapsedTime * 0.05;
+            particlesMesh.rotation.x = elapsedTime * 0.02;
+
+            // Interacción con Mouse (Sutil)
+            particlesMesh.rotation.y += mouseX * 0.00005;
+            particlesMesh.rotation.x += mouseY * 0.00005;
+
+            renderer.render(scene, camera);
+            requestAnimationFrame(animate3D);
+        };
+
+        animate3D();
+
+        // Responsive Three.js
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+    </script>
+</body>
 </html>
